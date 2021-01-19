@@ -1,19 +1,28 @@
+const path = require('path')
 const express = require('express');
 const cors = require('cors');
+const schema = require('./schema');
+const mongoose = require('mongoose');
+const dotenv = require('dotenv');
+const connectDB = require('./db');
+
+const { ApolloServer } = require('apollo-server-express');
+
+const server = new ApolloServer({
+  typeDefs: schema.typeDefs,
+  resolvers: schema.resolvers
+})
 
 const app = express();
+app.use(express.json())
 app.use(cors())
 
-app.get('/api/customers', (req, res) => {
-  const customers = [
-    {id: 1, firstName: 'John', lastName: 'Doe'},
-    {id: 2, firstName: 'Brad', lastName: 'Traversy'},
-    {id: 3, firstName: 'Mary', lastName: 'Swanson'},
-  ];
+dotenv.config({ path: './config/config.env' })
+connectDB()
 
-  res.json(customers);
-});
 
-const port = 5000;
+server.applyMiddleware({app});
 
-app.listen(port, () => `Server running on port ${port}`);
+
+const port = process.env.PORT || 5000
+app.listen(port, () => `Server running on port ${process.env.PORT} and apollo server at http://localhost:5000${server.graphqlPath}`);
