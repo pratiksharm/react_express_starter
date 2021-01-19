@@ -1,6 +1,9 @@
 const {gql} = require('apollo-server-express');
 const Movie = require('./models/movie').Movies;
 
+const User = require('./models/User').Users;
+
+
 const typeDefs = gql `
     type Movie {
         id: ID!
