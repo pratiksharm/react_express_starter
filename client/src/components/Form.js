@@ -2,9 +2,8 @@ import React, { useContext, useEffect, useState } from "react";
 import _ from "lodash-es";
 import * as dayjs from "dayjs";
 import "./forms.css";
-
-
 import {GlobalContext} from '../contexts/globalcontext';
+
 
 const Form = () => {
   const [word, setWord] = useState("");
@@ -260,14 +259,14 @@ const Form = () => {
   }, [count]);
 
   return (
-    <div className="md:container md:mx-auto flex-col">
-      <h1 className="text-7xl">{date.format("DD,MMMM YYYY")}</h1>
-      <ul>
-        <p>{keywords}</p>
-      </ul>
-      <p>count:{count}</p>
-      <p>sentences:{sentences}</p>
-      <form onSubmit={onSubmit}>
+    <div style={{display: "flex", flexDirection: "row", justifyContent: "center"}}>
+      <div style={{display: "flex", flexDirection: "column", maxWidth: "500px"}}>
+      <h1 className="">{date.format("DD,MMMM YYYY")}</h1>
+      <div style={{display: "flex", flex: "row", justifyContent: "space-between"}}>
+        <p>count:{count}</p>
+        <p>sentences:{sentences}</p>
+      </div>
+      <form onSubmit={onSubmit} style={{display: "flex", flexDirection: "column" }}>
         <textarea
           className="textarea leading-loose text-3xl"
           disabled={completed}
@@ -278,11 +277,23 @@ const Form = () => {
           autoComplete={false}
           placeholder="Enter your text here..."
         ></textarea>
-        <button className="bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-600 focus:ring-opacity-50">
+        <ul style={{display: "flex", flexDirection: "row", flexWrap:"wrap",justifyContent: "space-between"}}>
+        {keywords.map((keyword, index) => {
+          return(
+            <div style={{border: "1px solid black",borderRadius:"4px", padding: "5px", margin: "4px"}}>
+              {keyword}
+            </div>
+          )
+        })}
+      </ul>
+        <button >
           Done
         </button>
       </form>
     </div>
+
+    </div>
+    
   );
 };
 

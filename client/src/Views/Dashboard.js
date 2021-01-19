@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import { Redirect } from 'react-router-dom';
+import { AuthContext } from '../contexts/AuthContext';
 import "./Dashboard.css";
 
 const data = [
@@ -293,23 +295,30 @@ const data = [
 ]
 
 const Dashboard = () => {
+    const authContext = useContext(AuthContext);
+    const userName = authContext.user ? authContext.user.name: null;
+    const userToken = authContext.token ? authContext.token: null;
+    const userProfile =  authContext.user ? authContext.user.imageUrl: null;
+    const LoggedIn =  authContext.user ? authContext.isLoggedIn: null;
     return (
-        <div className="con">
-            <h1>Dashboard</h1>
-            <h2>Hello, Pratik</h2>
-            <div className="dashcontainer">
-            {data.map((name, index) => {
-                return (
-                    <div key={index} >
-                        <div className={name? "complete": "incomplete"}></div>
-                    </div>
-                )
-            })}
-            <p>Words</p>
+        <div>
+            {LoggedIn ?<div className="con">
+                <h1>Dashboard</h1>
+                <h2>Hello,{userName}</h2>
+                <img src={userProfile} alt="profileImage" />
+                <div className="dashcontainer">
+                    {data.map((name, index) => {
+                        return (
+                            <div key={index} >
+                                <div className={name ? "complete" : "incomplete"}></div>
+                            </div>
+                        )
+                    })}
+                </div>
+            </div> : <Redirect to="/"></Redirect>
+            }
+            
         </div>
-
-        </div>
-        
     )
 }
 export default Dashboard;
