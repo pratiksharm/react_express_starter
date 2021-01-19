@@ -17,12 +17,10 @@ const app = express();
 app.use(express.json())
 app.use(cors())
 
-dotenv.config({ path: './config/config.env' })
+dotenv.config({ path: './config.env' })
 connectDB()
 
-
 server.applyMiddleware({app});
-
 
 const port = process.env.PORT || 5000
 app.listen(port, () => `Server running on port ${process.env.PORT} and apollo server at http://localhost:5000${server.graphqlPath}`);

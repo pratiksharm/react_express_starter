@@ -2,7 +2,7 @@ import './App.css';
 import React from 'react';
 import Form from './components/Form';
 import Login from './Views/Login'
-import {AuthContext} from './contexts/AuthContext';
+import {AuthProvider} from './contexts/AuthContext';
 import { GlobalProvider } from './contexts/globalcontext';
 import {
   BrowserRouter as Router,
@@ -19,8 +19,8 @@ function App() {
   return (
     <div className="App">
       <Router>
-      <nav>
-          <ul>
+      <nav >
+          <ul className="navcontainer">
             <li>
               <Link to="/">Home</Link>
             </li>
@@ -41,7 +41,7 @@ function App() {
             </li>
           </ul>
         </nav>
-  <AuthContext.Provider>
+  <AuthProvider>
     <GlobalProvider>
       <Switch>
           <Route exact path="/">
@@ -65,7 +65,7 @@ function App() {
           
         </Switch>
       </GlobalProvider>
-    </AuthContext.Provider>
+    </AuthProvider>
       
       </Router>
     </div>
