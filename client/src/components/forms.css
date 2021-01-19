@@ -1,0 +1,14 @@
+.textarea {
+    font-family: 'TravelingTypewriter', Courier, monospace;
+    font-size: 1.6rem;
+    border: none;
+    background-color: transparent;
+    outline: none;
+    min-width: 400px;
+    min-height: 400px;
+    height: fit-content;
+    background      : radial-gradient(rgb(48, 47, 47) 1px, transparent 1.2px);
+    background-size : 50px 50px;
+    font-weight: 900;
+    padding: 15px;
+ }
