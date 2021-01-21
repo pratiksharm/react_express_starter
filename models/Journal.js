@@ -3,10 +3,7 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema;
 
 const journalSchema = new Schema({
-    id: {
-        type: String,
-        required:true
-    },
+
     content: {
         type: String,
         required: true
@@ -19,10 +16,16 @@ const journalSchema = new Schema({
         type: Boolean,
         required: true
     },
-    date: {
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+    },
+    createdAt: {
         type: Date,
         default: Date.now
     }
+}, {
+    timestamps: true
 })
 
 const Journals = mongoose.model('Journal', journalSchema);

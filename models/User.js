@@ -1,4 +1,5 @@
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
+const { Journals } = require('./Journal');
 
 //new User Schema for adding new User
 const UserSchema = new mongoose.Schema({
@@ -24,7 +25,7 @@ const UserSchema = new mongoose.Schema({
     createdAt: {
         type: Date,
         default: Date.now
-    }
+    }, 
 })
 
 const Users = mongoose.model('User', UserSchema);

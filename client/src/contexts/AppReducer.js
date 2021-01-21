@@ -1,5 +1,5 @@
-/* eslint import/no-anonymous-default-export: [2, {"allowArrowFunction": true}] */
-export default (state, action) => {
+
+const AppReducer=(state, action) => {
     switch (action.type) {
         case 'DELETE_JOURNAL':
             return {
@@ -15,3 +15,4 @@ export default (state, action) => {
             return state;
     }
 }
+export default AppReducer;

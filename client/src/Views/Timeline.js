@@ -1,6 +1,16 @@
 import React, { useContext } from 'react';
 import { Chrono } from "react-chrono";
-import { GlobalContext} from '../contexts/globalcontext';
+import {useQuery, gql} from "@apollo/client";
+
+const GET_JOURNAL = gql`
+  query {
+  getJournals{
+    content
+    id
+
+  }
+}
+`
 
 const items = [
     {
@@ -14,10 +24,23 @@ const items = [
 ]
 
 function Timeline() {
-    
-    return (
+  const { loading, error, data } = useQuery(GET_JOURNAL);
+  if (loading) return 'Loading...';
+  if (error) return `Error! ${error.message}`;
+  return (
         <div className="container">
-        <Chrono items={items} mode="VERTICAL" />
+          {console.log(data)}
+        {data.getJournals.map((journal) => {
+          return (
+            <div key={journal.id}>
+              <div ></div>
+              <div> {journal.count}</div>
+              <div> {journal.content}</div>   
+            </div>
+          )
+          
+        })}
+        {/* <Chrono items={items} mode="VERTICAL" /> */}
       </div>
 
     )

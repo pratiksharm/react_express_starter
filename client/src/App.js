@@ -15,7 +15,11 @@ import Timeline from './Views/Timeline';
 import Analysis from './Views/Analysis';
 import WriteOn from './Views/WriteOn';
 import Dashboard from './Views/Dashboard';
-function App() {
+import {ApolloProvider} from '@apollo/client';
+import {client} from './contexts/ApolloCient';
+
+
+function App() {  
   return (
     <div className="App">
       <Router>
@@ -41,6 +45,7 @@ function App() {
             </li>
           </ul>
         </nav>
+  <ApolloProvider client={client}>
   <AuthProvider>
     <GlobalProvider>
       <Switch>
@@ -62,11 +67,10 @@ function App() {
           <Route path="/dashboard">
             <Dashboard/>
           </Route>
-          
         </Switch>
       </GlobalProvider>
     </AuthProvider>
-      
+  </ApolloProvider>    
       </Router>
     </div>
   );
