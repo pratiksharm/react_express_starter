@@ -13,17 +13,6 @@ const items = [
     
 ]
 
-const JournalingData = () => {
-    const {journalList} = useContext(GlobalContext);
-    const newData = [];
-    // const data = journalList.forEach(function(journal){
-    //     newData.
-
-    // })
-    
-}
-
-
 function Timeline() {
     
     return (
