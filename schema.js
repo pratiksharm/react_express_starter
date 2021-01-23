@@ -1,7 +1,7 @@
 const {gql} = require('apollo-server-express');
 const { GraphQLScalarType, Kind } = require('graphql')
 const Movie = require('./models/movie').Movies;
-
+const User = require('./models/User').Users;
 const Journal = require('./models/Journal').Journals;
 
 
@@ -12,14 +12,16 @@ const typeDefs = gql `
         content: String!
         count: Float!
         completed: Boolean!
+        authorid: ID!
         user: User
         createdAt: Date
     }
     type User {
+        id: ID!
         googleId: String!
-        displayName: String!
-        firstName: String!
-        lastName: String!
+        displayName: String
+        firstName: String
+        lastName: String
         image: String
         createdAt: Date
         journal: [Journal] 
@@ -36,10 +38,12 @@ const typeDefs = gql `
         getMovie(id: ID!): Movie
         getJournals: [Journal]
         getJournal(id: ID!): Journal
+        getUsers: [User]
+        getUser(id: ID!): User
     }
     type Mutation {
         addUser(googleId: String!,displayName: String!, firstName: String!, lastName: String!, image: String!): User
-        addJournal(content: String!, count: Float!, completed: Boolean!): Journal
+        addJournal(content: String!, count: Float!, completed: Boolean!, authorId: ID!): Journal
         addMovie(name: String!, producer: String!, rating: Float!): Movie
         updateMovie(name: String!, producer: String!, rating: Float): Movie
         deleteMovie(id: ID!): Movie
@@ -68,6 +72,12 @@ const resolvers = {
         getJournals: (parent, args) => {
             return Journal.find({})
         },
+        getUsers: (parent, args) => {
+            return User.find({})
+        },
+        getUser: (parent, args) => {
+            return User.findById(args.id)
+        },
         getJournal: (parent, args) => {
             return Journal.findById(args.id)
         },
@@ -79,11 +89,28 @@ const resolvers = {
         }
     },
     Mutation: {
+        addUser: (parent, args) => {
+            if(User.findOne({googleId:args.googleId})){
+                return 
+            }else {
+                let user = new User({
+                    id: args.id,
+                    googleId: args.googleId,
+                    displayName: args.displayName,
+                    firstName: args.firstName,
+                    lastName: args.lastName,
+                    image: args.image,
+                })
+                return user.save();
+            }
+            
+        },
         addJournal: (parent, args) => {
             let journal = new Journal({
                 content: args.content,
                 count: args.count,
-                completed: args.completed
+                completed: args.completed,
+                authorId: User.findOne({googleId:args.googleId}).id
             })
             return journal.save();
         },

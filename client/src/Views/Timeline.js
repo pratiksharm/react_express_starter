@@ -7,7 +7,6 @@ const GET_JOURNAL = gql`
   getJournals{
     content
     id
-
   }
 }
 `
@@ -36,6 +35,7 @@ function Timeline() {
               <div ></div>
               <div> {journal.count}</div>
               <div> {journal.content}</div>   
+              <div> {journal.completed}</div>
             </div>
           )
           

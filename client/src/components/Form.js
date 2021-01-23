@@ -2,23 +2,47 @@ import React, { useContext, useEffect, useState } from "react";
 import _ from "lodash-es";
 import * as dayjs from "dayjs";
 import "./forms.css";
-import {GlobalContext} from '../contexts/globalcontext';
+import { GlobalContext } from '../contexts/globalcontext';
+import { gql, useMutation } from '@apollo/client';
+import MyDocument from '../Views/Document';
+import { PDFViewer } from '@react-pdf/renderer';
+import InputRange from './Input';
+import {AuthContext} from '../contexts/AuthContext';
+
+
+const ADD_JOURNAL = gql`
+  mutation AddJournal($content: String!, $count: Float!, $completed: Boolean!, $user: ObjectId!){
+    addJournal(content: $content , count: $count, completed: $completed, userId: $user ) {
+    id 
+    content
+    count
+    completed
+    user {
+      id
+    }
+  }
+  }
+`;
 
 
 const Form = () => {
   const [word, setWord] = useState("");
-  const date  = new dayjs();
+  const date = new dayjs();
   const [completed, setCompleted] = useState(false);
 
+
+  const authContext = useContext(AuthContext);
+  const userProfile = authContext.user
   //adding data to the globalContext 
-  const { addJournal} = useContext(GlobalContext);
+  const { addJournal } = useContext(GlobalContext);
   const rightwords = _.words(word, /\b[-?(\w+)?]+\b/gi)
   const count = _.words(word, /\b[-?(\w+)?]+\b/gi).length;
 
   const wordlimit = 100;
   const progress = count / wordlimit;
   const sentences = _.words(word, /[.|!|?]/g).length;
-  
+
+  const [updateJournal] = useMutation(ADD_JOURNAL)
   const nonStopWords = [];
   const stopWords = [
     "a",
@@ -231,22 +255,33 @@ const Form = () => {
     "why's",
     "would",
   ];
-  const keywords = _.difference(rightwords,stopWords)
+  const keywords = _.difference(rightwords, stopWords)
   //To Do check for the lowercase()
   const keywordsCount = _.countBy(keywords);
   console.log(keywordsCount);
 
   const onSubmit = (e) => {
     e.preventDefault();
+    const id = Math.floor(Math.random() * 100000000)
     const newJournal = {
-      id: Math.floor(Math.random() * 100000000),
+      id: id,
       content: word,
       count: count,
       sentences: sentences,
       completed: completed,
       date: date
     }
+    console.table(typeof (word), typeof (count), typeof (completed))
     addJournal(newJournal);
+    updateJournal({
+      variables: {
+        id: id, 
+        content: word, 
+        count: count, 
+        completed: completed,
+        user: userProfile.googleId
+      }
+    })
     setWord("");
     console.log(newJournal, "added");
   }
@@ -259,41 +294,45 @@ const Form = () => {
   }, [count]);
 
   return (
-    <div style={{display: "flex", flexDirection: "row", justifyContent: "center"}}>
-      <div style={{display: "flex", flexDirection: "column", maxWidth: "500px"}}>
-      <h1 className="">{date.format("DD,MMMM YYYY")}</h1>
-      <div style={{display: "flex", flex: "row", justifyContent: "space-between"}}>
-        <p>count:{count}</p>
-        <p>sentences:{sentences}</p>
-      </div>
-      <form onSubmit={onSubmit} style={{display: "flex", flexDirection: "column" }}>
-        <textarea
-          className="textarea leading-loose text-3xl"
-          disabled={completed}
-          onChange={(e) =>
-            setWord(e.target.value)
-          }
-          onPaste="return false"
-          autoComplete={false}
-          placeholder="Enter your text here..."
-        ></textarea>
-        <ul style={{display: "flex", flexDirection: "row", flexWrap:"wrap",justifyContent: "space-between"}}>
-        {keywords.map((keyword, index) => {
-          return(
-            <div style={{border: "1px solid black",borderRadius:"4px", padding: "5px", margin: "4px"}}>
-              {keyword}
-            </div>
-          )
-        })}
-      </ul>
-        <button >
-          Done
+    <div style={{ display: "flex", flexDirection: "row", justifyContent: "center" }}>
+      <div style={{ display: "flex", flexDirection: "column", maxWidth: "500px" }}>
+        <h1 className="">{date.format("DD,MMMM YYYY")}</h1>
+        <div style={{ display: "flex", flex: "row", justifyContent: "space-between" }}>
+          <p>count:{count}</p>
+          <p>sentences:{sentences}</p>
+        </div>
+        <InputRange/>
+        <form onSubmit={onSubmit} style={{ display: "flex", flexDirection: "column" }}>
+          <textarea
+            className="textarea leading-loose text-3xl"
+            disabled={completed}
+            onChange={(e) =>
+              setWord(e.target.value)
+            }
+            onPaste="return false"
+            autoComplete={false}
+            placeholder="Enter your text here..."
+          ></textarea>
+          <ul style={{ display: "flex", flexDirection: "row", flexWrap: "wrap", justifyContent: "space-between" }}>
+            {keywords.map((keyword, index) => {
+              return (
+                <div style={{ border: "1px solid black", borderRadius: "4px", padding: "5px", margin: "4px" }}>
+                  {keyword}
+                </div>
+              )
+            })}
+          </ul>
+          <button >
+            Done
         </button>
-      </form>
-    </div>
+        </form>
+        {/* <PDFViewer>
+        <MyDocument input={word} date={date.format("DD,MMMM YYYY")}/>
+      </PDFViewer> */}
+      </div>
 
     </div>
-    
+
   );
 };
 
