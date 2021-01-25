@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import _ from "lodash-es";
+import * as RS from 'text-readability';
 import * as dayjs from "dayjs";
 import "./forms.css";
 import { GlobalContext } from '../contexts/globalcontext';
@@ -8,6 +9,7 @@ import MyDocument from '../Views/Document';
 import { PDFViewer } from '@react-pdf/renderer';
 import InputRange from './Input';
 import {AuthContext} from '../contexts/AuthContext';
+
 
 
 const ADD_JOURNAL = gql`
@@ -44,6 +46,7 @@ const Form = () => {
 
   const [updateJournal] = useMutation(ADD_JOURNAL)
   const nonStopWords = [];
+
   const stopWords = [
     "a",
     "about",
@@ -256,12 +259,18 @@ const Form = () => {
     "would",
   ];
   const keywords = _.difference(rightwords, stopWords)
-  //To Do check for the lowercase()
-  const keywordsCount = _.countBy(keywords);
+  //ToDo check for the lowercase()
+  const keywordsCount = _.countBy(keywords)
+  const fourkeywords = _.orderBy(keywordsCount, [''])
+
+  const readability = RS.fleschReadingEase(word)
+  console.log(readability);
   console.log(keywordsCount);
 
   const onSubmit = (e) => {
     e.preventDefault();
+    
+    
     const id = Math.floor(Math.random() * 100000000)
     const newJournal = {
       id: id,
@@ -282,6 +291,7 @@ const Form = () => {
         user: userProfile.googleId
       }
     })
+    
     setWord("");
     console.log(newJournal, "added");
   }

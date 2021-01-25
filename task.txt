@@ -1,0 +1,8 @@
+//ToDo for today 26 jan 2021
+4. Designing the schema/s
+
+1. Remove the Global context? yes/No
+5. Options I can have three context one for auth/apollo auth client, global/context->global store, theme-context
+6. 
+2. Refactor the form code --> make more components
+3. Setting up the backend

@@ -12,13 +12,13 @@ const typeDefs = gql `
         content: String!
         count: Float!
         completed: Boolean!
-        authorid: ID!
+        googleId: String!
         user: User
         createdAt: Date
     }
     type User {
         id: ID!
-        googleId: String!
+        googleId: String
         displayName: String
         firstName: String
         lastName: String
@@ -34,16 +34,16 @@ const typeDefs = gql `
     }
 
     type Query {
-        getMovies: [Movie]
-        getMovie(id: ID!): Movie
-        getJournals: [Journal]
-        getJournal(id: ID!): Journal
-        getUsers: [User]
-        getUser(id: ID!): User
+        movies: [Movie]
+        movie(id: ID!): Movie
+        journals: [Journal]
+        journal (id: ID!): Journal
+        users: [User]
+        user(id: ID!): User
     }
     type Mutation {
         addUser(googleId: String!,displayName: String!, firstName: String!, lastName: String!, image: String!): User
-        addJournal(content: String!, count: Float!, completed: Boolean!, authorId: ID!): Journal
+        addJournal(content: String!, count: Float!, completed: Boolean!, googleId: String!): Journal
         addMovie(name: String!, producer: String!, rating: Float!): Movie
         updateMovie(name: String!, producer: String!, rating: Float): Movie
         deleteMovie(id: ID!): Movie
@@ -69,22 +69,22 @@ const dateScalar = new GraphQLScalarType({
 const resolvers = {
     Date: dateScalar,
     Query: {
-        getJournals: (parent, args) => {
+        journals: (parent, args) => {
             return Journal.find({})
         },
-        getUsers: (parent, args) => {
+        users: (parent, args) => {
             return User.find({})
         },
-        getUser: (parent, args) => {
+        user: (parent, args) => {
             return User.findById(args.id)
         },
-        getJournal: (parent, args) => {
+        journal: (parent, args) => {
             return Journal.findById(args.id)
         },
-        getMovies: (parent, args) => {
+        movies: (parent, args) => {
             return Movie.find({})
         },
-        getMovie: (parent, args) => {
+        movie: (parent, args) => {
             return Movie.findById(args.id);
         }
     },
@@ -110,7 +110,8 @@ const resolvers = {
                 content: args.content,
                 count: args.count,
                 completed: args.completed,
-                authorId: User.findOne({googleId:args.googleId}).id
+                googleId: args.googleId,
+                user: User.find({googleId: args.googleId}).id
             })
             return journal.save();
         },

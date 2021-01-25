@@ -4,9 +4,8 @@ import {AuthContext} from '../contexts/AuthContext';
 
 import { GoogleLogin } from 'react-google-login';
 import { useHistory } from 'react-router-dom';
+import {clientId} from '../configs/clientconfig';
 
-const clientId = "929067087700-k2oomkroljojq9l3cepbeia8v8qgibe9.apps.googleusercontent.com";
-const ClientSecret = "QLOi7ygYafhsqzy3zFJAEQ8Q";
 import { gql, useMutation } from '@apollo/client';
 
 
