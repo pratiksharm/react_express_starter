@@ -3,25 +3,19 @@ import _ from "lodash-es";
 import * as RS from 'text-readability';
 import * as dayjs from "dayjs";
 import "./forms.css";
-import { GlobalContext } from '../contexts/globalcontext';
 import { gql, useMutation } from '@apollo/client';
-import MyDocument from '../Views/Document';
-import { PDFViewer } from '@react-pdf/renderer';
 import InputRange from './Input';
 import {AuthContext} from '../contexts/AuthContext';
 
 
-
 const ADD_JOURNAL = gql`
-  mutation AddJournal($content: String!, $count: Float!, $completed: Boolean!, $user: ObjectId!){
-    addJournal(content: $content , count: $count, completed: $completed, userId: $user ) {
+  mutation AddJournal($content: String!, $count: Float!, $completed: Boolean!,$googleId: String!){
+    addJournal(content: $content , count: $count, completed: $completed, googleId: $googleId ) {
     id 
     content
     count
     completed
-    user {
-      id
-    }
+    googleId
   }
   }
 `;
@@ -32,11 +26,10 @@ const Form = () => {
   const date = new dayjs();
   const [completed, setCompleted] = useState(false);
 
-
   const authContext = useContext(AuthContext);
-  const userProfile = authContext.user
-  //adding data to the globalContext 
-  const { addJournal } = useContext(GlobalContext);
+  const userProfile = JSON.parse(localStorage.getItem('user'))
+  console.log(userProfile);
+
   const rightwords = _.words(word, /\b[-?(\w+)?]+\b/gi)
   const count = _.words(word, /\b[-?(\w+)?]+\b/gi).length;
 
@@ -261,39 +254,26 @@ const Form = () => {
   const keywords = _.difference(rightwords, stopWords)
   //ToDo check for the lowercase()
   const keywordsCount = _.countBy(keywords)
-  const fourkeywords = _.orderBy(keywordsCount, [''])
 
   const readability = RS.fleschReadingEase(word)
   console.log(readability);
   console.log(keywordsCount);
+  const googleId = userProfile.googleId;
 
   const onSubmit = (e) => {
     e.preventDefault();
-    
-    
     const id = Math.floor(Math.random() * 100000000)
-    const newJournal = {
-      id: id,
-      content: word,
-      count: count,
-      sentences: sentences,
-      completed: completed,
-      date: date
-    }
-    console.table(typeof (word), typeof (count), typeof (completed))
-    addJournal(newJournal);
     updateJournal({
       variables: {
         id: id, 
         content: word, 
         count: count, 
         completed: completed,
-        user: userProfile.googleId
+        googleId: googleId
       }
     })
-    
     setWord("");
-    console.log(newJournal, "added");
+
   }
 
   useEffect(() => {

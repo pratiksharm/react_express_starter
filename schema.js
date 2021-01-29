@@ -26,27 +26,22 @@ const typeDefs = gql `
         createdAt: Date
         journal: [Journal] 
     }
-    type Movie {
-        id: ID!
-        name: String!
-        producer: String!
-        rating: Float!
-    }
+    # type Movie {
+    #     id: ID!
+    #     name: String!
+    #     producer: String!
+    #     rating: Float!
+    # }
 
     type Query {
-        movies: [Movie]
-        movie(id: ID!): Movie
         journals: [Journal]
         journal (id: ID!): Journal
         users: [User]
         user(id: ID!): User
     }
     type Mutation {
-        addUser(googleId: String!,displayName: String!, firstName: String!, lastName: String!, image: String!): User
+        addUser(googleId: String!,displayName: String, firstName: String, lastName: String, image: String): User
         addJournal(content: String!, count: Float!, completed: Boolean!, googleId: String!): Journal
-        addMovie(name: String!, producer: String!, rating: Float!): Movie
-        updateMovie(name: String!, producer: String!, rating: Float): Movie
-        deleteMovie(id: ID!): Movie
     }
 `
 const dateScalar = new GraphQLScalarType({
@@ -81,12 +76,12 @@ const resolvers = {
         journal: (parent, args) => {
             return Journal.findById(args.id)
         },
-        movies: (parent, args) => {
-            return Movie.find({})
-        },
-        movie: (parent, args) => {
-            return Movie.findById(args.id);
-        }
+        // movies: (parent, args) => {
+        //     return Movie.find({})
+        // },
+        // movie: (parent, args) => {
+        //     return Movie.findById(args.id);
+        // }
     },
     Mutation: {
         addUser: (parent, args) => {
@@ -106,44 +101,45 @@ const resolvers = {
             
         },
         addJournal: (parent, args) => {
+            const author = User.find({googleId: args.googleId})
             let journal = new Journal({
                 content: args.content,
                 count: args.count,
                 completed: args.completed,
                 googleId: args.googleId,
-                user: User.find({googleId: args.googleId}).id
+                user: author._id
             })
             return journal.save();
         },
-        addMovie: (parent, args) => {
-            let movie = new Movie({
-                name: args.name,
-                producer: args.producer,
-                rating: args.rating,
-            });
-            return movie.save();
-        },
-        updateMovie: (parent, args) => {
-            if (!args.id) return ;
-                return Movie.findOneAndUpdate(
-                    {
-                        _id: args.id
-                    },
-                    {
-                        $set: {
-                            name: args.name,
-                            producer: args.producer,
-                            rating: args.rating
-                        }
-                    }, {new: true}, (err, Movie) => {
-                        if(err) {
-                            console.log('Something went wrong when updating the movie');
-                        } else {
+        // addMovie: (parent, args) => {
+        //     let movie = new Movie({
+        //         name: args.name,
+        //         producer: args.producer,
+        //         rating: args.rating,
+        //     });
+        //     return movie.save();
+        // },
+        // updateMovie: (parent, args) => {
+        //     if (!args.id) return ;
+        //         return Movie.findOneAndUpdate(
+        //             {
+        //                 _id: args.id
+        //             },
+        //             {
+        //                 $set: {
+        //                     name: args.name,
+        //                     producer: args.producer,
+        //                     rating: args.rating
+        //                 }
+        //             }, {new: true}, (err, Movie) => {
+        //                 if(err) {
+        //                     console.log('Something went wrong when updating the movie');
+        //                 } else {
 
-                        }
-                    } 
-                )
-        }
+        //                 }
+        //             } 
+        //         )
+        // }
     }
 }
 

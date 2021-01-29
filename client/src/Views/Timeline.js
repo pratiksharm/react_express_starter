@@ -1,7 +1,11 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { Chrono } from "react-chrono";
 import {useQuery, gql} from "@apollo/client";
+import MarkdownEditor from '../components/Editor';
+import {debounce} from "lodash-es";
 
+
+import Editor from 'rich-markdown-editor';
 const GET_JOURNAL = gql`
   query {
   getJournals{
@@ -23,11 +27,26 @@ const items = [
 ]
 
 function Timeline() {
+  const [word, setWord] = useState("");
+  const [editor, setEditor] = useState(false);
   const { loading, error, data } = useQuery(GET_JOURNAL);
-  if (loading) return 'Loading...';
-  if (error) return `Error! ${error.message}`;
+  // if (loading) return 'Loading...';
+  // if (error) return `Error! ${error.message}`;
+  const handleChange = debounce(value => {
+    const text = value();
+    console.log(text)
+    localStorage.setItem("saved", text);
+    setWord(text);
+  }, 250)
   return (
         <div className="container">
+        {console.log(editor)}
+        <button onClick={() => setEditor(!editor)}>Read toggle</button>
+      <div className="container">
+        <Editor id="example" readOnly={editor} value={word} onChange={handleChange}/>
+      </div>
+        
+{/*         
           {console.log(data)}
         {data.getJournals.map((journal) => {
           return (
@@ -40,7 +59,7 @@ function Timeline() {
           )
           
         })}
-        {/* <Chrono items={items} mode="VERTICAL" /> */}
+         */}
       </div>
 
     )

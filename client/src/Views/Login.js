@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { useContext, useState } from 'react';
+import React, { useContext, useReducer, useState } from 'react';
 import {AuthContext} from '../contexts/AuthContext';
 
 import { GoogleLogin } from 'react-google-login';
@@ -22,16 +22,20 @@ const ADD_USER = gql`
 `;
 
 const LoginPage = () => {
-    const [token,setToken ] = useState(null);
-    const authContext = useContext(AuthContext);
+    const {UserLogin} = useContext(AuthContext);
     const history = useHistory();
     const [updateUser] = useMutation(ADD_USER)
 
-    const responseSuccessGoogle = (response) => {
+    const responseSuccessGoogle = async (response) => {
         console.log(response)
-        authContext.isLoggedIn = true
-        authContext.token = response.tokenId
-        authContext.user = response.profileObj
+        const newUser = {
+            token: response?.tokenId,
+            user: response?.profileObj
+        }
+        UserLogin(newUser);
+        // authContext.isLoggedIn = true
+        // authContext.token = response?.tokenId
+        // authContext.user = response?.profileObj
         updateUser({variables: {
             googleId: response.profileObj.googleId, 
             displayName: response.profileObj.name,
@@ -39,10 +43,7 @@ const LoginPage = () => {
             lastName: response.profileObj.familyName, 
             image: response.profileObj.imageUrl,
         }})
-
-        console.table(authContext);
         history.push('/dashboard')
-
     }
     const responseErrorGoogle = (res) => {
         console.log(res);
@@ -50,6 +51,7 @@ const LoginPage = () => {
     return (
         <div>
     <div>
+    
         <GoogleLogin
             clientId={clientId}
             buttonText="Login with google"

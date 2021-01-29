@@ -296,16 +296,18 @@ const data = [
 
 const Dashboard = () => {
     const authContext = useContext(AuthContext);
-    const userName = authContext.user ? authContext.user.name: null;
-    const userToken = authContext.token ? authContext.token: null;
-    const userProfile =  authContext.user ? authContext.user.imageUrl: null;
-    const LoggedIn =  authContext.user ? authContext.isLoggedIn: null;
+    const userinfo = JSON.parse(localStorage.getItem('user'))
+    console.log(userinfo)
+    const userName = userinfo?.name
+    const userProfile =  userinfo?.imageUrl
+    const LoggedIn =  localStorage.getItem('user') ? true: false
     return (
         <div>
             {LoggedIn ?<div className="con">
                 <h1>Dashboard</h1>
                 <h2>Hello,{userName}</h2>
                 <img src={userProfile} alt="profileImage" />
+                <div> another idea is to use </div>
                 <div className="dashcontainer">
                     {data.map((name, index) => {
                         return (

@@ -17,7 +17,7 @@ const app = express();
 app.use(express.json())
 app.use(cors())
 
-dotenv.config({ path: './config.env' })
+dotenv.config({ path: './config/config.env' })
 connectDB()
 
 server.applyMiddleware({app});

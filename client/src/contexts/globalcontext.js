@@ -46,10 +46,10 @@ export const GlobalProvider = ({ children }) => {
     });
   }
 
-  function addJournal(transaction) {
+  function addJournal(journal) {
     dispatch({
       type: 'ADD_JOURNAL',
-      payload: transaction
+      payload: journal
     });
   }
 

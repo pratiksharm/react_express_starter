@@ -13,12 +13,21 @@ export const AuthContext = createContext(initialState);
 export const AuthProvider = ({children}) => {
     const [state, dispatch] = useReducer(AuthReducer, initialState );
 
+    //Actions
+    function UserLogin(userdata) {
+        dispatch({
+            type: 'LOGIN',
+            payload: userdata
+        })
+    }
+
     
     return (
         <AuthContext.Provider
         value={{
-            state,
-            dispatch
+            user: state.user,
+            token: state.token,
+            UserLogin,
         }}>
         {children}
     </AuthContext.Provider>
