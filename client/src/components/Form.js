@@ -5,8 +5,11 @@ import * as dayjs from "dayjs";
 import "./forms.css";
 import { gql, useMutation } from '@apollo/client';
 import InputRange from './Input';
+import analyse from 'simple-sentiment-lib'
 import {AuthContext} from '../contexts/AuthContext';
 
+
+import synonyms  from 'synonyms'
 
 const ADD_JOURNAL = gql`
   mutation AddJournal($content: String!, $count: Float!, $completed: Boolean!,$googleId: String!){
@@ -26,9 +29,7 @@ const Form = () => {
   const date = new dayjs();
   const [completed, setCompleted] = useState(false);
 
-  const authContext = useContext(AuthContext);
   const userProfile = JSON.parse(localStorage.getItem('user'))
-  console.log(userProfile);
 
   const rightwords = _.words(word, /\b[-?(\w+)?]+\b/gi)
   const count = _.words(word, /\b[-?(\w+)?]+\b/gi).length;
@@ -254,10 +255,36 @@ const Form = () => {
   const keywords = _.difference(rightwords, stopWords)
   //ToDo check for the lowercase()
   const keywordsCount = _.countBy(keywords)
+  const readabilityScores = []
+  const frs = RS.fleschReadingEase(word)
+  const frsg = RS.fleschReadingEaseToGrade(word)
+  const difficultWords = RS.difficultWords(word)
+  // sentiment analysis
+  // synonyms
+  // grammer analysis
+  // word count
+  // sentence count
+  // readability
+  // This library has 27779 words in it's dictionary.
+  console.table(difficultWords)
 
-  const readability = RS.fleschReadingEase(word)
-  console.log(readability);
-  console.log(keywordsCount);
+  console.table(synonyms("screen", 'v'))
+  // console.table(synonyms.dictionary)
+  console.log(synonyms("alert", 'a'))
+
+  const sentimentAnalysis = analyse(`Playing games has always been thought to be important to 
+  the development of well-balanced and creative children; 
+  however, what part, if any, they should play in the lives 
+  of adults has never been researched that deeply. I believe 
+  that playing games is every bit as important for adults 
+  as for children. Not only is taking time out to play games 
+  with our children and other adults valuable to building 
+  interpersonal relationships but is also a wonderful way 
+  to release built up tension.`)
+  console.log(sentimentAnalysis)
+
+  console.log(readabilityScores);
+  //console.log(keywordsCount);
   const googleId = userProfile.googleId;
 
   const onSubmit = (e) => {
@@ -280,7 +307,6 @@ const Form = () => {
     if (count >= wordlimit) {
       setCompleted(true);
     }
-    console.log("this is running for a long time");
   }, [count]);
 
   return (

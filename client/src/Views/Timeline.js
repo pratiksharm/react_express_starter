@@ -3,7 +3,7 @@ import { Chrono } from "react-chrono";
 import {useQuery, gql} from "@apollo/client";
 import MarkdownEditor from '../components/Editor';
 import {debounce} from "lodash-es";
-
+import './Timeline.css'
 
 import Editor from 'rich-markdown-editor';
 const GET_JOURNAL = gql`
@@ -13,6 +13,14 @@ const GET_JOURNAL = gql`
     id
   }
 }
+`
+const GET_JOURNAL_BY_USER = gql`
+  query getJournalByUser($googleId: String!){
+      journalsByuser(googleId: $googleId) {
+        content
+      }
+    
+  }
 `
 
 const items = [
@@ -26,12 +34,18 @@ const items = [
     
 ]
 
-function Timeline() {
+function Timeline({googleId}) {
   const [word, setWord] = useState("");
   const [editor, setEditor] = useState(false);
-  const { loading, error, data } = useQuery(GET_JOURNAL);
-  // if (loading) return 'Loading...';
-  // if (error) return `Error! ${error.message}`;
+  const user = JSON.parse(localStorage.getItem('user'))
+  const userAccount = user.googleId
+  console.log(googleId, userAccount, typeof(userAccount), )
+  const { loading, error, data } = useQuery(GET_JOURNAL_BY_USER, {
+    variables: {
+      googleId: userAccount}
+  });
+  if (loading) return 'Loading...';
+  if (error) return `Error! ${error.message}`;
   const handleChange = debounce(value => {
     const text = value();
     console.log(text)
@@ -41,9 +55,9 @@ function Timeline() {
   return (
         <div className="container">
         {console.log(editor)}
-        <button onClick={() => setEditor(!editor)}>Read toggle</button>
+        {console.table(data)}
       <div className="container">
-        <Editor id="example" readOnly={editor} value={word} onChange={handleChange}/>
+        <Editor id="example" autoFocus template="Template"/>
       </div>
         
 {/*         

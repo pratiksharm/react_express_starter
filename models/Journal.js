@@ -13,7 +13,7 @@ const journalSchema = new Schema({
     },
     completed: {
         type: Boolean,
-        required: true
+        required: true  
     },
     googleId: {
         type: String,

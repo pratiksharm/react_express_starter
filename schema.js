@@ -35,9 +35,10 @@ const typeDefs = gql `
 
     type Query {
         journals: [Journal]
-        journal (id: ID!): Journal
+        journal (id: ID, googleId: String): Journal
         users: [User]
         user(id: ID!): User
+        journalsByuser(googleId: String!): [Journal]
     }
     type Mutation {
         addUser(googleId: String!,displayName: String, firstName: String, lastName: String, image: String): User
@@ -74,8 +75,15 @@ const resolvers = {
             return User.findById(args.id)
         },
         journal: (parent, args) => {
-            return Journal.findById(args.id)
+            if(args.id) {
+                return Journal.findById(args.id)
+            } else {
+                return Journal.find({googleId: args.googleId})
+            }
         },
+        journalsByuser:(parent, args) => {
+            return Journal.find({googleId: args.googleId})
+        }
         // movies: (parent, args) => {
         //     return Movie.find({})
         // },

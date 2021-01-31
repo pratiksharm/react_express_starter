@@ -1,10 +1,12 @@
 import axios from 'axios';
 import React, { useContext, useReducer, useState } from 'react';
 import {AuthContext} from '../contexts/AuthContext';
-
+import {Redirect} from 'react-router-dom';
 import { GoogleLogin } from 'react-google-login';
 import { useHistory } from 'react-router-dom';
 import {clientId} from '../configs/clientconfig';
+
+
 
 import { gql, useMutation } from '@apollo/client';
 
@@ -48,17 +50,22 @@ const LoginPage = () => {
     const responseErrorGoogle = (res) => {
         console.log(res);
     }   
+    const LoggedIn =  localStorage.getItem('user') ? true: false
     return (
         <div>
     <div>
-    
-        <GoogleLogin
+        { !LoggedIn ? <GoogleLogin
             clientId={clientId}
             buttonText="Login with google"
             onSuccess={responseSuccessGoogle}
             onFailure={responseErrorGoogle}
             cookiePolicy={'single_host_origin'}
             />
+            :
+            <Redirect to="/dashboard"></Redirect>
+        }
+    
+        
         </div>
     </div>
     )
