@@ -5,9 +5,6 @@ import {Redirect} from 'react-router-dom';
 import { GoogleLogin } from 'react-google-login';
 import { useHistory } from 'react-router-dom';
 import {clientId} from '../configs/clientconfig';
-
-
-
 import { gql, useMutation } from '@apollo/client';
 
 

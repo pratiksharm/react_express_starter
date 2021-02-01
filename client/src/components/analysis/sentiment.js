@@ -6,7 +6,8 @@ const SentimentAnalysis = ({word}) => {
     console.log(analysis)
     return (
         <div>
-            
+            {// return the analysis data here}
+            }
         </div>
 
     )

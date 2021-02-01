@@ -1,9 +1,12 @@
 import React from 'react';
-
 const Footer = () => {
     return (
-        <div>
-            Made(India) = WORLD
-        </div>
+        <footer className="footer">
+            <div>
+            Made in India for World
+            </div>
+        </footer>
     )
 }
+
+export default Footer;

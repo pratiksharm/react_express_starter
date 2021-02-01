@@ -20,6 +20,12 @@ export const AuthProvider = ({children}) => {
             payload: userdata
         })
     }
+    function UserLogOut() {
+        dispatch({
+            type: "LOGOUT",
+            payload: null
+        })
+    }
 
     
     return (
@@ -28,6 +34,7 @@ export const AuthProvider = ({children}) => {
             user: state.user,
             token: state.token,
             UserLogin,
+            UserLogOut
         }}>
         {children}
     </AuthContext.Provider>

@@ -1,15 +1,11 @@
 import React, { useContext, useEffect, useState } from "react";
 import _ from "lodash-es";
-import * as RS from 'text-readability';
 import * as dayjs from "dayjs";
 import "./forms.css";
 import { gql, useMutation } from '@apollo/client';
-import InputRange from './Input';
-import analyse from 'simple-sentiment-lib'
-import {AuthContext} from '../contexts/AuthContext';
 
+import MarkdownEditor from './Editor'
 
-import synonyms  from 'synonyms'
 
 const ADD_JOURNAL = gql`
   mutation AddJournal($content: String!, $count: Float!, $completed: Boolean!,$googleId: String!){
@@ -255,35 +251,9 @@ const Form = () => {
   const keywords = _.difference(rightwords, stopWords)
   //ToDo check for the lowercase()
   const keywordsCount = _.countBy(keywords)
+  //reading score
   const readabilityScores = []
-  const frs = RS.fleschReadingEase(word)
-  const frsg = RS.fleschReadingEaseToGrade(word)
-  const difficultWords = RS.difficultWords(word)
   // sentiment analysis
-  // synonyms
-  // grammer analysis
-  // word count
-  // sentence count
-  // readability
-  // This library has 27779 words in it's dictionary.
-  console.table(difficultWords)
-
-  console.table(synonyms("screen", 'v'))
-  // console.table(synonyms.dictionary)
-  console.log(synonyms("alert", 'a'))
-
-  const sentimentAnalysis = analyse(`Playing games has always been thought to be important to 
-  the development of well-balanced and creative children; 
-  however, what part, if any, they should play in the lives 
-  of adults has never been researched that deeply. I believe 
-  that playing games is every bit as important for adults 
-  as for children. Not only is taking time out to play games 
-  with our children and other adults valuable to building 
-  interpersonal relationships but is also a wonderful way 
-  to release built up tension.`)
-  console.log(sentimentAnalysis)
-
-  console.log(readabilityScores);
   //console.log(keywordsCount);
   const googleId = userProfile.googleId;
 
@@ -310,25 +280,11 @@ const Form = () => {
   }, [count]);
 
   return (
-    <div style={{ display: "flex", flexDirection: "row", justifyContent: "center" }}>
-      <div style={{ display: "flex", flexDirection: "column", maxWidth: "500px" }}>
-        <h1 className="">{date.format("DD,MMMM YYYY")}</h1>
-        <div style={{ display: "flex", flex: "row", justifyContent: "space-between" }}>
-          <p>count:{count}</p>
-          <p>sentences:{sentences}</p>
+    <div style={{ display: "flex", flexDirection: "row", justifyContent: "center", }}>
+        <div className="editorContainer">
+          <MarkdownEditor />
         </div>
-        <InputRange/>
-        <form onSubmit={onSubmit} style={{ display: "flex", flexDirection: "column" }}>
-          <textarea
-            className="textarea leading-loose text-3xl"
-            disabled={completed}
-            onChange={(e) =>
-              setWord(e.target.value)
-            }
-            onPaste="return false"
-            autoComplete={false}
-            placeholder="Enter your text here..."
-          ></textarea>
+
           <ul style={{ display: "flex", flexDirection: "row", flexWrap: "wrap", justifyContent: "space-between" }}>
             {keywords.map((keyword, index) => {
               return (
@@ -338,15 +294,6 @@ const Form = () => {
               )
             })}
           </ul>
-          <button >
-            Done
-        </button>
-        </form>
-        {/* <PDFViewer>
-        <MyDocument input={word} date={date.format("DD,MMMM YYYY")}/>
-      </PDFViewer> */}
-      </div>
-
     </div>
 
   );

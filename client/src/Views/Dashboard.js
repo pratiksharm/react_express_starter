@@ -4,7 +4,8 @@ import { AuthContext } from '../contexts/AuthContext';
 import {useQuery, gql} from "@apollo/client";
 import * as dayjs from 'dayjs';
 import "./Dashboard.css";
-
+import { GoogleLogout} from 'react-google-login';
+import { clientId } from '../configs/clientconfig';
 
 const GET_JOURNAL_BY_USER = gql`
   query getJournalByUser($googleId: String!){
@@ -23,7 +24,7 @@ const GET_JOURNAL_BY_USER = gql`
 
 
 const Dashboard = ({googleId}) => {
-    const authContext = useContext(AuthContext);
+    const {UserLogOut} = useContext(AuthContext);
     const userinfo = JSON.parse(localStorage.getItem('user'))
     console.log(userinfo)
     const userName = userinfo?.name
@@ -35,12 +36,22 @@ const Dashboard = ({googleId}) => {
           googleId: userAccount}
       });
     const LoggedIn =  localStorage.getItem('user') ? true: false
+
+    const Logout = () => {
+        console.log("log out")
+        UserLogOut();
+    }
     return (
         <div>
             {LoggedIn ?<div className="con">
                 <h1>Dashboard</h1>
                 <h2>Hello,{userName}</h2>
                 {console.log(data)}
+                <GoogleLogout
+                    clientId= {clientId}
+                    buttonText="Logout"
+                    onLogoutSuccess={Logout}
+                ></GoogleLogout>
                 <img src={userProfile} alt="profileImage" />
                 <div> 
                     <h2>UPCOMING FEATURES</h2>

@@ -1,6 +1,29 @@
-.navcontainer {
-  display: flex;
-  flex-flow: row wrap;
-  justify-content: space-between;
+:root {
+    --bg: #242526;
+    --bg-accent: #484a4d;
+    --text-color: #dadce1;
+    --nav-size: 60px;
+    --border: 1px solid #474a4d;
+    --speed: 500ms;
+}
+ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
 }
 
+a {
+    color: var(--text-color);
+    text-decoration: none;
+}
+
+.footer {
+    margin-top: 0px;
+    color: grey;
+    text-align: center;
+
+}
+body {
+    background: var(--bg);
+    content: white;
+}

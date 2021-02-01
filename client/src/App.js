@@ -17,34 +17,14 @@ import WriteOn from './Views/WriteOn';
 import Dashboard from './Views/Dashboard';
 import {ApolloProvider} from '@apollo/client';
 import {client} from './contexts/ApolloCient';
-
+import NavBar from './Nav';
+import Footer from './components/Footer'
 
 function App() {  
   return (
     <div className="App">
       <Router>
-      <nav >
-          <ul className="navcontainer">
-            <li>
-              <Link to="/">Home</Link>
-            </li>
-            <li>
-              <Link to="/timeline">Timeline</Link>
-            </li>
-            <li>
-              <Link to="/analysis">Analysis</Link>
-            </li>
-            <li>
-              <Link to="/form">form</Link>
-            </li>
-            <li>
-              <Link to="/writeon">writeOn</Link>
-            </li>
-            <li>
-              <Link to="/dashboard">Dashboard</Link>
-            </li>
-          </ul>
-        </nav>
+      <NavBar/>
   <ApolloProvider client={client}>
   <AuthProvider>
     <GlobalProvider>
@@ -72,6 +52,7 @@ function App() {
     </AuthProvider>
   </ApolloProvider>    
       </Router>
+      <Footer />
     </div>
   );
 }
