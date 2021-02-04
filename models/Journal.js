@@ -5,15 +5,15 @@ const Schema = mongoose.Schema;
 const journalSchema = new Schema({
     content: {
         type: String,
-        required: true
+        required: false
     },
     count: {
         type: Number,
-        required: true
+        required: false
     },
     completed: {
         type: Boolean,
-        required: true  
+        required: false
     },
     googleId: {
         type: String,

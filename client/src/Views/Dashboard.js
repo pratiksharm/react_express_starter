@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
-import { Redirect } from 'react-router-dom';
+import { Redirect, useHistory } from 'react-router-dom';
 import { AuthContext } from '../contexts/AuthContext';
-import {useQuery, gql} from "@apollo/client";
+import {useQuery, gql, useMutation} from "@apollo/client";
 import * as dayjs from 'dayjs';
 import "./Dashboard.css";
 import { GoogleLogout} from 'react-google-login';
@@ -16,6 +16,15 @@ const GET_JOURNAL_BY_USER = gql`
       } 
   }
 `
+const ADD_JOURNAL = gql`
+  mutation AddJournal($googleId: String!){
+    addJournal(googleId: $googleId ) {
+    id 
+    googleId
+    createdAt
+  }
+  }
+`;
 
 // My query would look like something
 // query getdata { user(id: googleid){ complete, createAt}}
@@ -24,6 +33,7 @@ const GET_JOURNAL_BY_USER = gql`
 
 
 const Dashboard = ({googleId}) => {
+
     const {UserLogOut} = useContext(AuthContext);
     const userinfo = JSON.parse(localStorage.getItem('user'))
     console.log(userinfo)
@@ -36,22 +46,49 @@ const Dashboard = ({googleId}) => {
           googleId: userAccount}
       });
     const LoggedIn =  localStorage.getItem('user') ? true: false
-
     const Logout = () => {
         console.log("log out")
         UserLogOut();
     }
+    //adding a journal
+    const history = useHistory();
+    const [
+        updateJournal,
+        {loading: mutationLoading, 
+        error: mutationError, 
+        data: mutationData}
+    ] = useMutation(ADD_JOURNAL)
+    const AddJournal = () => {
+        const id = Math.floor(Math.random() * 100000000).toString()
+        updateJournal({
+            variables: {
+                id: id,
+                googleId: userAccount
+            }
+        })
+        if(mutationData) {
+            console.log(mutationData)
+        }else {
+            console.log("mutation is taking time")
+        }
+        // send the mutationData to form and update it
+        console.log('added a journal', id)
+        history.push('/form');
+    }
+
     return (
         <div>
             {LoggedIn ?<div className="con">
                 <h1>Dashboard</h1>
                 <h2>Hello,{userName}</h2>
                 {console.log(data)}
+                
                 <GoogleLogout
                     clientId= {clientId}
                     buttonText="Logout"
                     onLogoutSuccess={Logout}
                 ></GoogleLogout>
+                <button type="button" onClick={AddJournal}>New Entry</button>
                 <img src={userProfile} alt="profileImage" />
                 <div> 
                     <h2>UPCOMING FEATURES</h2>

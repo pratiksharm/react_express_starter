@@ -9,9 +9,9 @@ const typeDefs = gql `
     scalar Date
     type Journal {
         id: ID!
-        content: String!
-        count: Float!
-        completed: Boolean!
+        content: String
+        count: Float
+        completed: Boolean
         googleId: String!
         user: User
         createdAt: Date
@@ -35,14 +35,16 @@ const typeDefs = gql `
 
     type Query {
         journals: [Journal]
-        journal (id: ID, googleId: String): Journal
+        journal (id: ID!, googleId: String!): Journal
         users: [User]
         user(id: ID!): User
         journalsByuser(googleId: String!): [Journal]
     }
     type Mutation {
         addUser(googleId: String!,displayName: String, firstName: String, lastName: String, image: String): User
-        addJournal(content: String!, count: Float!, completed: Boolean!, googleId: String!): Journal
+        addJournal(id: String, content: String, count: Float, completed: Boolean, googleId: String!): Journal
+        # updateMovie(name: String!, producer: String!, rating: Float): Movie
+        updateJournal(id: String!, content: String, count: Float, completed: Boolean): Journal
     }
 `
 const dateScalar = new GraphQLScalarType({
@@ -110,15 +112,38 @@ const resolvers = {
         },
         addJournal: (parent, args) => {
             const author = User.find({googleId: args.googleId})
+            const authorId = author.id
             let journal = new Journal({
-                content: args.content,
-                count: args.count,
-                completed: args.completed,
+                id: args.id || null,
+                content: args.content || null,
+                count: args.count || null,
+                completed: args.completed || null,
                 googleId: args.googleId,
-                user: author._id
+                user: authorId || null
             })
             return journal.save();
         },
+        updateJournal: async (parent, args) => {
+            if(!args.id) return;
+                return await Journal.findOneAndUpdate(
+                    {
+                        _id: args.id
+                    },
+                    {
+                        $set: {
+                            content: args.content,
+                            count: args.count,
+                            completed: args.completed,
+                        }
+                    }, {new: true}, (err, Journal) => {
+                        if(err) {
+                            console.log('Somethings went wrong')
+                        } else {
+
+                        }
+                    }
+                )
+        }
         // addMovie: (parent, args) => {
         //     let movie = new Movie({
         //         name: args.name,

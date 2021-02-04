@@ -20,6 +20,7 @@
     "react-icons": "^4.1.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.1",
+    "remove-markdown": "^0.3.0",
     "rich-markdown-editor": "^11.1.6",
     "simple-sentiment-lib": "^1.1.8",
     "styled-components": "^5.2.1",
