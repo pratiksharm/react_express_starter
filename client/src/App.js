@@ -19,12 +19,18 @@ import {ApolloProvider} from '@apollo/client';
 import {client} from './contexts/ApolloCient';
 import NavBar from './Nav';
 import Footer from './components/Footer'
+import { Grommet} from 'grommet';
+import MainSidebar from './UI/MainSidebar'
+
 
 function App() {  
   return (
+  <Grommet>
+    
     <div className="App">
       <Router>
       <NavBar/>
+      {/* <MainSidebar/> */}
   <ApolloProvider client={client}>
   <AuthProvider>
     <GlobalProvider>
@@ -54,6 +60,7 @@ function App() {
       </Router>
       <Footer />
     </div>
+  </Grommet>
   );
 }
 

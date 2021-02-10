@@ -6,6 +6,7 @@ import * as dayjs from 'dayjs';
 import "./Dashboard.css";
 import { GoogleLogout} from 'react-google-login';
 import { clientId } from '../configs/clientconfig';
+import { GlobalContext } from '../contexts/globalcontext';
 
 const GET_JOURNAL_BY_USER = gql`
   query getJournalByUser($googleId: String!){
@@ -35,8 +36,8 @@ const ADD_JOURNAL = gql`
 const Dashboard = ({googleId}) => {
 
     const {UserLogOut} = useContext(AuthContext);
+    const {addJournal} = useContext(GlobalContext);
     const userinfo = JSON.parse(localStorage.getItem('user'))
-    console.log(userinfo)
     const userName = userinfo?.name
     const userAccount = userinfo?.googleId
     const userProfile =  userinfo?.imageUrl
@@ -58,22 +59,22 @@ const Dashboard = ({googleId}) => {
         error: mutationError, 
         data: mutationData}
     ] = useMutation(ADD_JOURNAL)
-    const AddJournal = () => {
-        const id = Math.floor(Math.random() * 100000000).toString()
+    const AddJournal = async () => {
         updateJournal({
             variables: {
-                id: id,
                 googleId: userAccount
             }
         })
-        if(mutationData) {
-            console.log(mutationData)
-        }else {
-            console.log("mutation is taking time")
+        const data = await mutationData;
+        console.log(data, "this is the data")
+        const journal = {
+            id: data?.addJournal.id,
+            googleId: data?.addJournal.googleId
         }
-        // send the mutationData to form and update it
-        console.log('added a journal', id)
-        history.push('/form');
+        addJournal(journal);
+        // // send the mutationData to form and update it
+        console.log('added a journal', data?.addJournal.id)
+        data ? history.push("/form") : "data not added"
     }
 
     return (

@@ -3,32 +3,7 @@ import AppReducer from './AppReducer';
 
 // Initial state
 const initialState = {
-  journalList: [{
-      id: '100',
-      content: "Hey what are you doing i am great at doing this",
-      count: "10",
-      sentences: "2",
-      completed: true,
-      date: "17 January 2021",
-  },
-  {
-    id: '254',
-    content: "Hey what are you doing i am great at doing this",
-    count: "10",
-    sentences: "2",
-    completed: false,
-    date: "17 January 2021",
-},
-{
-    id: '121',
-    content: "Hey what are you doing i am great at doing this",
-    count: "10",
-    sentences: "2",
-    completed: false,
-    date: "17 January 2021",
-}
-      
-  ]
+  journalList: [ ]
 }
 
 // Create context

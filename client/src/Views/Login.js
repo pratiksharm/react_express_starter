@@ -1,4 +1,3 @@
-import axios from 'axios';
 import React, { useContext, useReducer, useState } from 'react';
 import {AuthContext} from '../contexts/AuthContext';
 import {Redirect} from 'react-router-dom';
