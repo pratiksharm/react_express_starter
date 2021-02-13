@@ -3,9 +3,10 @@ import {AuthContext} from '../contexts/AuthContext';
 import {Redirect} from 'react-router-dom';
 import { GoogleLogin } from 'react-google-login';
 import { useHistory } from 'react-router-dom';
-import {clientId} from '../configs/clientconfig';
 import { gql, useMutation } from '@apollo/client';
 
+
+const GOOGLE_CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID
 
 const ADD_USER = gql`
   mutation AddUser($googleId: String!, $displayName: String!, $firstName: String!, $lastName: String!, $image: String! ){
@@ -51,7 +52,7 @@ const LoginPage = () => {
         <div>
     <div>
         { !LoggedIn ? <GoogleLogin
-            clientId={clientId}
+            clientId={GOOGLE_CLIENT_ID}
             buttonText="Login with google"
             onSuccess={responseSuccessGoogle}
             onFailure={responseErrorGoogle}

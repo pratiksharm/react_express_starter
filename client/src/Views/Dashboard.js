@@ -5,8 +5,10 @@ import {useQuery, gql, useMutation} from "@apollo/client";
 import * as dayjs from 'dayjs';
 import "./Dashboard.css";
 import { GoogleLogout} from 'react-google-login';
-import { clientId } from '../configs/clientconfig';
 import { GlobalContext } from '../contexts/globalcontext';
+
+
+const GOOGLE_CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID
 
 const GET_JOURNAL_BY_USER = gql`
   query getJournalByUser($googleId: String!){
@@ -85,7 +87,7 @@ const Dashboard = ({googleId}) => {
                 {console.log(data)}
                 
                 <GoogleLogout
-                    clientId= {clientId}
+                    clientId= {GOOGLE_CLIENT_ID}
                     buttonText="Logout"
                     onLogoutSuccess={Logout}
                 ></GoogleLogout>
