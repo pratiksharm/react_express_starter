@@ -53,6 +53,7 @@ function App() {
           <Route path="/dashboard">
             <Dashboard/>
           </Route>
+          <Route path="*"  component={NotFoundPage}/>
         </Switch>
       </GlobalProvider>
     </AuthProvider>
