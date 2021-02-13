@@ -45,6 +45,7 @@ const typeDefs = gql `
         addJournal(id: String, content: String, count: Float, completed: Boolean, googleId: String!): Journal
         # updateMovie(name: String!, producer: String!, rating: Float): Movie
         updateJournal(id: String!, content: String, count: Float, completed: Boolean): Journal
+        deleteJournal(id: ID!, googleId: String!): Journal
     }
 `
 const dateScalar = new GraphQLScalarType({
@@ -122,6 +123,14 @@ const resolvers = {
                 user: authorId || null
             })
             return journal.save();
+        },
+        deleteJournal: async (parent, args) => {
+            const removejournal = await Journal.findByIdAndDelete(args.id)
+            if (!removejournal) {
+                throw new Error('error')
+            } else {
+                return removejournal;
+            }
         },
         updateJournal: async (parent, args) => {
             if(!args.id) return;

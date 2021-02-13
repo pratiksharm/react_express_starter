@@ -4,6 +4,7 @@
   "description": "365-words",
   "main": "server.js",
   "scripts": {
+    "heroku-postbuild": "cd client && npm install && npm install --only=dev --no-shrinkwrap && npm run build",
     "client-install": "cd client && npm install",
     "start": "node server.js",
     "server": "nodemon server.js",
@@ -29,5 +30,8 @@
     "morgan": "^1.10.0",
     "passport": "^0.4.1",
     "passport-google-oauth20": "^2.0.0"
+  },
+  "engines": {
+    "node": "12.x"
   }
 }
